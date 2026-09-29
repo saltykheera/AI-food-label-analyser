@@ -8,7 +8,7 @@ export default function Footer() {
       <div className="apple-container">
         <div className="apple-footer-disclaimer">
           <p>
-            1. NutriLens AI analyzes packaging photography using computer vision and nutritional indexes. Always consult healthcare professionals for acute medical allergies or specific clinical dietary requirements.
+            1. proshanprakhar AI analyzes packaging photography using computer vision and nutritional indexes. Always consult healthcare professionals for acute medical allergies or specific clinical dietary requirements.
           </p>
         </div>
 
@@ -16,7 +16,7 @@ export default function Footer() {
 
         <div className="apple-footer-bottom">
           <div className="apple-footer-copy">
-            <span>Copyright &copy; {new Date().getFullYear()} NutriLens. All rights reserved.</span>
+            <span>Copyright &copy; {new Date().getFullYear()} proshanprakhar. All rights reserved.</span>
           </div>
 
           <div className="apple-footer-links">

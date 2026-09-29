@@ -101,7 +101,7 @@ export default function WorkPage() {
             <span>Home</span>
           </Link>
 
-          <span className="work-light-title">NutriLens</span>
+          <span className="work-light-title">proshanprakhar</span>
 
           {currentResult ? (
             <button type="button" onClick={resetScan} className="work-light-action-link">
