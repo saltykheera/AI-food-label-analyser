@@ -1,11 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -20,71 +20,46 @@ export default function Header() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
-    <header className="site-header site-header-dark" id="site-header">
-      <div className="container header-container">
-        <a href="#" className="brand-logo" aria-label="NutriLens AI Home" onClick={closeMenu}>
-          <div className="starter-phone-icon">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="5" y="2" width="14" height="20" rx="3" />
-              <path d="M12 18h.01" />
-            </svg>
-          </div>
-          <span className="brand-name">
-            NutriLens AI
-          </span>
-        </a>
+    <header className="apple-global-nav" id="site-header">
+      <div className="apple-nav-container">
+        {/* Brand */}
+        <Link href="/" className="apple-nav-brand" onClick={closeMenu}>
+          <svg className="apple-brand-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="3" />
+            <circle cx="12" cy="12" r="3" />
+          </svg>
+          <span className="apple-brand-text">NutriLens</span>
+        </Link>
 
-        {/* Desktop & Mobile Nav Drawer */}
-        <nav className={`main-nav main-nav-dark ${mobileMenuOpen ? 'mobile-active' : ''}`} id="main-nav">
-          <a href="#hero" className="nav-link" onClick={closeMenu}>
-            Home
+        {/* Minimal Navigation */}
+        <nav className={`apple-nav-menu ${mobileMenuOpen ? 'open' : ''}`}>
+          <a href="#hero" className="apple-nav-item" onClick={closeMenu}>
+            Overview
           </a>
-          <a href="#demo-section" className="nav-link" onClick={closeMenu}>
+          <a href="#demo-section" className="apple-nav-item" onClick={closeMenu}>
             Scanner
           </a>
-          <a href="#how-it-works" className="nav-link" onClick={closeMenu}>
-            How It Works
+          <a href="#pillars" className="apple-nav-item" onClick={closeMenu}>
+            Features
           </a>
-          <a href="#allergy-engine" className="nav-link" onClick={closeMenu}>
-            Allergy Engine
-          </a>
-          <a href="#history-preview" className="nav-link" onClick={closeMenu}>
-            History
-          </a>
-          <a href="#pricing" className="nav-link" onClick={closeMenu}>
-            Pricing
-          </a>
-          <a href="#faq" className="nav-link" onClick={closeMenu}>
-            Docs
-          </a>
+          <Link href="/work" className="apple-nav-item apple-nav-highlight" onClick={closeMenu}>
+            Mobile App
+          </Link>
         </nav>
 
-        <div className="header-actions">
-          <a href="#qr-modal" className="btn-install-badge" onClick={(e) => { e.preventDefault(); window.dispatchEvent(new CustomEvent('open-qr-modal')); }}>
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-              <polyline points="7 10 12 15 17 10"/>
-              <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            <span>Install</span>
-          </a>
-
-          <a href="#demo-section" className="btn btn-primary nav-cta" onClick={closeMenu}>
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-              <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-            <span>Scan Label</span>
-          </a>
+        {/* Action Button */}
+        <div className="apple-nav-actions">
+          <Link href="/work" className="apple-btn-pill">
+            Scan Label
+          </Link>
 
           <button
-            className="mobile-toggle mobile-toggle-dark"
-            aria-label={mobileMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+            className="apple-nav-toggle"
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
           >
-            <span></span>
-            <span></span>
-            <span></span>
+            <span className={mobileMenuOpen ? 'active' : ''}></span>
+            <span className={mobileMenuOpen ? 'active' : ''}></span>
           </button>
         </div>
       </div>

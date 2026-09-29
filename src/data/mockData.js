@@ -3,6 +3,48 @@
  */
 
 export const PRODUCTS = {
+  chobani: {
+    id: 'chobani',
+    name: 'Greek Yogurt - Plain Non-Fat',
+    brand: 'Chobani • 3/4 Cup (170g) serving',
+    category: 'Dairy',
+    score: 96,
+    grade: 'Grade A • Minimal Processing',
+    scoreColor: '#10b981',
+    nova_group: 1,
+    nova_label: 'Unprocessed or minimally processed foods',
+    verdict: 'An exceptional, protein-dense whole food with zero added sugars and live probiotic cultures.',
+    positives: [
+      'High protein content (16g per serving)',
+      'Zero added sugars and fat-free',
+      'Contains live and active probiotic cultures',
+      'Good source of calcium (200mg)'
+    ],
+    negatives: [
+      'Naturally contains dairy sugars (lactose)'
+    ],
+    nutrition: {
+      cal: '90 kcal', calTag: 'Calorie Light', calType: 'good',
+      sugar: '5g', sugarTag: 'Naturally Occurring', sugarType: 'good',
+      fat: '0g', fatTag: 'Zero Fat', fatType: 'good',
+      sodium: '65mg', sodiumTag: 'Low Sodium', sodiumType: 'good',
+      protein: '16g', proteinTag: 'High Protein', proteinType: 'good'
+    },
+    ingredients: [
+      { name: 'Cultured Grade A Non-Fat Milk', type: 'allergen', allergenKey: 'dairy', id: 'milk' },
+      { name: 'Live Active Probiotic Cultures', type: 'clean', id: 'vanilla' }
+    ],
+    additives: {
+      title: 'NOVA 1: Whole Food Formulation',
+      desc: 'Simple, clean formulation consisting only of cultured grade A non-fat milk and active cultures. No added sugars, gums, or synthetic preservatives.',
+      icon: '✨'
+    },
+    allergenTags: ['dairy'],
+    isVegan: false,
+    hasPalmOil: false,
+    hasAdditives: false,
+    swap: null
+  },
   bar: {
     id: 'bar',
     name: 'Organic SuperGreen Protein Bowl',

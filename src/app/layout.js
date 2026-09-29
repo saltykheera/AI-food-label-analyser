@@ -2,12 +2,11 @@ import './globals.css';
 
 export const metadata = {
   metadataBase: new URL('https://nutrilens.ai'),
-  title: 'NutriLens AI — Turn Confusing Food Labels into Instant, Personalized Health Insights',
-  description: 'AI-powered food label scanner that uses OCR to analyze ingredients, nutrition facts, additives, and allergens. Get instant health scores and personalized allergy alerts.',
-  keywords: 'food label analyzer, nutrition scanner, allergy alerts, AI OCR food scanner, additive radar, ingredient health score',
+  title: 'NutriLens — Decode what you eat. Instantly.',
+  description: 'Minimalist food label scanner powered by Vision AI. Instant nutrition facts, NOVA classification, and allergen alerts with zero clutter.',
   openGraph: {
-    title: 'NutriLens AI — Instant Food Label & Allergen Intelligence',
-    description: 'Never guess what you are eating again. Decode ingredients, flag allergens, and track nutrition with AI vision.',
+    title: 'NutriLens — Decode what you eat. Instantly.',
+    description: 'Instant nutrition facts, NOVA classification, and allergen alerts with Vision AI.',
     images: ['/assets/hero-food-scan.jpg'],
   },
 };

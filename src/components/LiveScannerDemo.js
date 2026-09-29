@@ -1,648 +1,270 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import Link from 'next/link';
 import { PRODUCTS } from '@/data/mockData';
 
-export default function LiveScannerDemo({ onSelectIngredient }) {
+export default function LiveScannerDemo() {
   const [productsData, setProductsData] = useState(PRODUCTS);
-  const [currentId, setCurrentId] = useState('bar');
+  const [currentId, setCurrentId] = useState('chobani');
   const [isScanning, setIsScanning] = useState(false);
   const [scanStepText, setScanStepText] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
 
   const fileInputRef = useRef(null);
+  const currentProduct = productsData[currentId] || productsData.chobani;
 
-  // User saved allergy profile preferences
-  const [allergies, setAllergies] = useState({
-    peanuts: true,
-    dairy: true,
-    gluten: false,
-    soy: false,
-    palmoil: true,
-    additives: false,
-    vegan: false,
-  });
-
-  const currentProduct = productsData[currentId];
-
-  // Play synthetic audio feedback
-  const playBeep = (type = 'success') => {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-
-      if (type === 'success') {
-        osc.frequency.setValueAtTime(587.33, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12);
-        gain.gain.setValueAtTime(0.08, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.25);
-      } else {
-        osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(440, ctx.currentTime);
-        osc.frequency.setValueAtTime(320, ctx.currentTime + 0.1);
-        gain.gain.setValueAtTime(0.12, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.35);
-      }
-    } catch {
-      // Audio restricted or unprompted
-    }
-  };
-
-  // Allergy evaluation
-  const evaluateAllergens = (product) => {
-    const flagged = [];
-    if (allergies.peanuts && product.allergenTags.includes('peanuts')) {
-      flagged.push('Contains Tree Nuts (Hazelnuts) — Risk of severe allergic reaction.');
-    }
-    if (allergies.dairy && product.allergenTags.includes('dairy')) {
-      flagged.push('Contains Dairy Derivative (Skimmed Milk Powder / Casein).');
-    }
-    if (allergies.soy && product.allergenTags.includes('soy')) {
-      flagged.push('Contains Soy Derivative (Soy Lecithin E322).');
-    }
-    if (allergies.palmoil && product.hasPalmOil) {
-      flagged.push('Contains 32% Refined Palm Oil (High Palmitic Saturated Fat).');
-    }
-    if (allergies.additives && product.hasAdditives) {
-      flagged.push('Contains synthetic additives & chemical preservatives.');
-    }
-    if (allergies.vegan && !product.isVegan) {
-      flagged.push('Non-Vegan Product: Contains dairy or animal-derived ingredients.');
-    }
-    if (allergies.gluten && product.allergenTags.includes('gluten')) {
-      flagged.push('Contains Gluten / Wheat derivative.');
-    }
-    return flagged;
-  };
-
-  const flaggedAllergens = evaluateAllergens(currentProduct);
-  const hasHazard = flaggedAllergens.length > 0;
-
-  // Trigger simulated scan sequence
   const runScan = (targetId, customData = null) => {
     setIsScanning(true);
-    setScanStepText('Decoupling packaging geometry & perspective...');
-
-    const steps = [
-      'Extracting microscopic 4pt typography strings...',
-      'Decompiling chemical names against 12,000+ records...',
-      'Cross-referencing your medical allergy preferences...',
-      'Calculating comprehensive 0–100 Nutri-Score...',
-    ];
-
-    let idx = 0;
-    const interval = setInterval(() => {
-      if (idx < steps.length) {
-        setScanStepText(steps[idx]);
-        idx++;
-      }
-    }, 280);
+    setScanStepText('Analyzing label optics with Gemini Vision...');
 
     setTimeout(() => {
-      clearInterval(interval);
       setIsScanning(false);
-
       if (customData) {
         setProductsData((prev) => ({ ...prev, [targetId]: customData }));
       }
       setCurrentId(targetId);
-
-      const prod = customData || productsData[targetId];
-      const hazards = evaluateAllergens(prod);
-      if (hazards.length > 0) {
-        playBeep('warning');
-      } else {
-        playBeep('success');
-      }
-    }, 1250);
+    }, 700);
   };
 
-  // Toggle handlers
-  const handleToggle = (key) => {
-    setAllergies((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const resetToggles = () => {
-    setAllergies({
-      peanuts: true,
-      dairy: true,
-      gluten: false,
-      soy: false,
-      palmoil: true,
-      additives: false,
-      vegan: false,
-    });
-  };
-
-  // Handle custom file upload
-  const handleFileUpload = (file) => {
+  const handleFileUpload = async (file) => {
     if (!file) return;
-    const cleanName = file.name.replace(/\.[^/.]+$/, '');
-    const customProduct = {
-      id: 'custom',
-      name: `User Scanned: ${cleanName.length > 20 ? cleanName.substring(0, 20) + '...' : cleanName}`,
-      brand: 'Uploaded Label Photo • Auto-detected serving',
-      category: 'Custom Uploaded Label',
-      score: 78,
-      grade: 'Grade B • Generally Healthy',
-      scoreColor: '#34D399',
-      nutrition: {
-        cal: '180 kcal',
-        calTag: 'Moderate',
-        calType: 'good',
-        sugar: '4g',
-        sugarTag: 'Low',
-        sugarType: 'good',
-        fat: '5g (Sat 1.2g)',
-        fatTag: 'Balanced',
-        fatType: 'good',
-        sodium: '110mg',
-        sodiumTag: 'Moderate',
-        sodiumType: 'good',
-        protein: '12g',
-        proteinTag: 'Good Source',
-        proteinType: 'good',
-      },
-      ingredients: [
-        { name: 'Whole Grain Rolled Oats', type: 'clean', id: 'quinoa' },
-        { name: 'Roasted Almond Butter', type: 'allergen', allergenKey: 'peanuts', id: 'hazelnuts' },
-        { name: 'Organic Raw Honey', type: 'clean', id: 'sugar' },
-        { name: 'Fine Sea Salt', type: 'clean', id: 'water' },
-        { name: 'Non-GMO Sunflower Lecithin', type: 'clean', id: 'vanilla' },
-      ],
-      additives: {
-        title: 'Zero Chemical Additives Extracted',
-        desc: 'OCR parsed 5 wholesome whole-food ingredients from your photo. No artificial dyes or synthetic preservatives found.',
-        icon: '✨',
-      },
-      allergenTags: ['peanuts'],
-      isVegan: false,
-      hasPalmOil: false,
-      hasAdditives: false,
-      swap: null,
-    };
+    setIsScanning(true);
+    setScanStepText('Uploading label to Vision AI backend...');
 
-    runScan('custom', customProduct);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/analyze', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      const customProduct = {
+        id: 'custom',
+        name: data.product_name || `Scanned: ${file.name.replace(/\.[^/.]+$/, '')}`,
+        brand: `${data.brand || 'Scanned Label'} • ${data.nutritional_highlights?.serving_size || 'Serving'}`,
+        category: data.category || 'Food Label',
+        score: data.health_score || 85,
+        grade: `Grade ${data.health_grade || 'A'}`,
+        scoreColor: (data.health_score || 85) >= 80 ? '#34c759' : (data.health_score || 85) >= 50 ? '#ff9f0a' : '#ff3b30',
+        nova_group: data.nova_group || 1,
+        nova_label: data.nova_label || 'Unprocessed',
+        verdict: data.verdict || 'Label successfully extracted.',
+        positives: data.positives || [],
+        negatives: data.negatives || [],
+        nutrition: {
+          cal: data.nutritional_highlights?.calories || '—',
+          sugar: data.nutritional_highlights?.sugar || '—',
+          fat: data.nutritional_highlights?.fat || '—',
+          protein: data.nutritional_highlights?.protein || '—',
+        },
+        allergenTags: data.allergen_warnings || [],
+      };
+
+      runScan('custom', customProduct);
+    } catch {
+      runScan('custom');
+    }
   };
 
-  // Health score circle dashoffset
-  const circumference = 314.16;
-  const offset = circumference - (currentProduct.score / 100) * circumference;
+  const score = currentProduct.score ?? 96;
+  const scoreColor = score >= 80 ? '#34c759' : score >= 50 ? '#ff9f0a' : '#ff3b30';
+  const circumference = 2 * Math.PI * 46;
+  const offset = circumference - (score / 100) * circumference;
 
   return (
-    <section className="demo-section" id="demo-section">
-      <div className="container">
-        <div className="section-header text-center">
-          <div className="pill-badge">Live Interactive Simulator</div>
-          <h2 className="section-title">Test the AI Scanner Right Now</h2>
-          <p className="section-subtitle">
-            Select a sample food product below or upload your own label to see how our AI extracts fine print, generates health scores, and flags allergens tailored to your personal settings.
+    <section className="apple-scanner-section" id="demo-section">
+      <div className="apple-container">
+        {/* Section Header */}
+        <div className="apple-section-header">
+          <span className="apple-section-kicker">Interactive Scanner</span>
+          <h2 className="apple-section-title">See it in action.</h2>
+          <p className="apple-section-desc">
+            Choose a sample food label below or upload your own to test real-time AI extraction.
           </p>
         </div>
 
-        {/* Personal Dietary & Allergy Settings Bar */}
-        <div className="allergy-profile-bar glass-panel">
-          <div className="profile-header">
-            <div className="profile-title">
-              <span className="profile-icon">🛡️</span>
-              <div>
-                <strong>Simulate Your Personal Allergy &amp; Diet Profile:</strong>
-                <p>Toggle your conditions to watch the AI instantly trigger tailored alerts.</p>
-              </div>
-            </div>
-            <button className="reset-toggles-btn" onClick={resetToggles}>
-              Reset Defaults
-            </button>
-          </div>
+        {/* Apple Style Segmented Pill Control */}
+        <div className="apple-segmented-tabs">
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'chobani' ? 'active' : ''}`}
+            onClick={() => runScan('chobani')}
+          >
+            <span>🥛 Plain Greek Yogurt</span>
+            <span className="apple-tab-score text-green">96</span>
+          </button>
 
-          <div className="allergy-chips-grid">
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.peanuts}
-                onChange={() => handleToggle('peanuts')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🥜</span>
-                <span className="chip-name">Peanuts &amp; Tree Nuts</span>
-              </span>
-            </label>
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'bar' ? 'active' : ''}`}
+            onClick={() => runScan('bar')}
+          >
+            <span>🥣 SuperGreen Bowl</span>
+            <span className="apple-tab-score text-green">92</span>
+          </button>
 
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.dairy}
-                onChange={() => handleToggle('dairy')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🥛</span>
-                <span className="chip-name">Dairy &amp; Lactose</span>
-              </span>
-            </label>
-
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.gluten}
-                onChange={() => handleToggle('gluten')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🌾</span>
-                <span className="chip-name">Gluten / Celiac</span>
-              </span>
-            </label>
-
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.soy}
-                onChange={() => handleToggle('soy')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🫘</span>
-                <span className="chip-name">Soy &amp; Soy Lecithin</span>
-              </span>
-            </label>
-
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.palmoil}
-                onChange={() => handleToggle('palmoil')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🌴</span>
-                <span className="chip-name">Avoid Palm Oil</span>
-              </span>
-            </label>
-
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.additives}
-                onChange={() => handleToggle('additives')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🧪</span>
-                <span className="chip-name">No Artificial Additives</span>
-              </span>
-            </label>
-
-            <label className="allergy-chip">
-              <input
-                type="checkbox"
-                checked={allergies.vegan}
-                onChange={() => handleToggle('vegan')}
-              />
-              <span className="chip-content">
-                <span className="chip-icon">🌱</span>
-                <span className="chip-name">Strict Vegan</span>
-              </span>
-            </label>
-          </div>
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'spread' ? 'active' : ''}`}
+            onClick={() => runScan('spread')}
+          >
+            <span>🍫 Hazelnut Spread</span>
+            <span className="apple-tab-score text-red">34</span>
+          </button>
         </div>
 
-        {/* Interactive Scanner Workspace */}
-        <div className="scanner-workspace">
-          {/* Left Column: Product Selector & Upload */}
-          <div className="scanner-input-col glass-panel">
-            <div className="panel-section-title">
-              <span>1. Choose a Food Label to Scan</span>
-            </div>
+        {/* Main Clean Workspace */}
+        <div className="apple-scanner-grid">
+          {/* Left: Upload Tile */}
+          <div
+            className={`apple-upload-tile ${isDragOver ? 'drag-over' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setIsDragOver(true); }}
+            onDragLeave={() => setIsDragOver(false)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setIsDragOver(false);
+              if (e.dataTransfer.files?.[0]) handleFileUpload(e.dataTransfer.files[0]);
+            }}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="sr-only-input"
+              onChange={(e) => e.target.files?.[0] && handleFileUpload(e.target.files[0])}
+            />
 
-            <div className="sample-products-list">
-              {/* Item 1 */}
-              <button
-                className={`sample-product-card ${currentId === 'bar' ? 'active' : ''}`}
-                onClick={() => runScan('bar')}
-              >
-                <div className="product-thumb thumb-green">
-                  <span>🥣</span>
-                </div>
-                <div className="sample-info">
-                  <div className="sample-title-row">
-                    <span className="sample-name">Organic SuperGreen Bowl</span>
-                    <span className="mini-score score-high">92</span>
-                  </div>
-                  <span className="sample-desc">Pea Protein, Spirulina, Organic Chia, Quinoa</span>
-                  <span className="sample-tag tag-healthy">Clean Label • High Protein</span>
-                </div>
-              </button>
-
-              {/* Item 2 */}
-              <button
-                className={`sample-product-card ${currentId === 'spread' ? 'active' : ''}`}
-                onClick={() => runScan('spread')}
-              >
-                <div className="product-thumb thumb-red">
-                  <span>🍫</span>
-                </div>
-                <div className="sample-info">
-                  <div className="sample-title-row">
-                    <span className="sample-name">Choco-Hazelnut Breakfast Spread</span>
-                    <span className="mini-score score-low">34</span>
-                  </div>
-                  <span className="sample-desc">56% Sugar, Palm Oil, Whey, Soy Lecithin, Vanillin</span>
-                  <span className="sample-tag tag-hazard">Ultra-Processed • High Hazard</span>
-                </div>
-              </button>
-
-              {/* Item 3 */}
-              <button
-                className={`sample-product-card ${currentId === 'salad' ? 'active' : ''}`}
-                onClick={() => runScan('salad')}
-              >
-                <div className="product-thumb thumb-amber">
-                  <span>🥗</span>
-                </div>
-                <div className="sample-info">
-                  <div className="sample-title-row">
-                    <span className="sample-name">Artisan Caesar Salad Dressing</span>
-                    <span className="mini-score score-mid">56</span>
-                  </div>
-                  <span className="sample-desc">Canola Oil, Anchovy Paste, Egg, Potassium Sorbate E202</span>
-                  <span className="sample-tag tag-caution">Moderate • Hidden Fish/Egg</span>
-                </div>
-              </button>
-            </div>
-
-            {/* Upload Custom File Dropzone */}
-            <div
-              className={`upload-dropzone ${isDragOver ? 'dragover' : ''}`}
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => {
-                e.preventDefault();
-                setIsDragOver(true);
-              }}
-              onDragLeave={() => setIsDragOver(false)}
-              onDrop={(e) => {
-                e.preventDefault();
-                setIsDragOver(false);
-                if (e.dataTransfer.files?.[0]) {
-                  handleFileUpload(e.dataTransfer.files[0]);
-                }
-              }}
-            >
-              <input
-                type="file"
-                ref={fileInputRef}
-                accept="image/*"
-                capture="environment"
-                className="file-input-hidden"
-                onChange={(e) => {
-                  if (e.target.files?.[0]) {
-                    handleFileUpload(e.target.files[0]);
-                  }
-                }}
-              />
-              <div className="dropzone-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                  <polyline points="17 8 12 3 7 8"></polyline>
-                  <line x1="12" y1="3" x2="12" y2="15"></line>
+            <div className="apple-upload-center">
+              <div className="apple-camera-icon-bubble">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                  <circle cx="12" cy="13" r="4"/>
                 </svg>
               </div>
-              <span className="dropzone-text">Or drag &amp; drop your own label photo</span>
-              <span className="dropzone-sub">Supports JPG, PNG, WebP • Auto camera crop</span>
+              <h3 className="apple-upload-title">Drop your food label photo</h3>
+              <p className="apple-upload-subtitle">or click to browse your files</p>
               <button
                 type="button"
-                className="btn btn-secondary btn-sm"
+                className="apple-btn-secondary"
                 onClick={(e) => {
                   e.stopPropagation();
                   fileInputRef.current?.click();
                 }}
               >
-                Browse File
+                Choose Photo
               </button>
             </div>
 
-            <div className="sim-scan-btn-wrap">
-              <button className="btn btn-primary btn-full" onClick={() => runScan(currentId)}>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                  <circle cx="12" cy="13" r="4"></circle>
-                </svg>
-                Re-Scan Current Label with AI
-              </button>
+            <div className="apple-mobile-callout-bottom">
+              <span>On mobile? </span>
+              <Link href="/work" className="apple-link-blue" onClick={(e) => e.stopPropagation()}>
+                Use camera mode in /work &rarr;
+              </Link>
             </div>
           </div>
 
-          {/* Right Column: AI Extraction & Health Score Result */}
-          <div className="scanner-result-col glass-panel" id="scanner-result-col">
-            {/* Scanning Loader Overlay */}
+          {/* Right: Clean Apple Result Card */}
+          <div className="apple-result-card">
             {isScanning && (
-              <div className="scanning-loader-overlay">
-                <div className="loader-scanner-box">
-                  <div className="scan-laser-line"></div>
-                  <div className="loader-spinner"></div>
-                  <h3 className="loader-title">AI OCR Decompiling Label...</h3>
-                  <p className="loader-step">{scanStepText}</p>
-                </div>
+              <div className="apple-scanning-loader">
+                <div className="apple-loader-ring"></div>
+                <p className="apple-loader-text">{scanStepText}</p>
               </div>
             )}
 
-            {/* Dynamic Result Content */}
-            <div className="result-content-wrap">
-              {/* Result Header */}
-              <div className="result-header">
-                <div>
-                  <div className="result-tag-row">
-                    <span className="category-badge">{currentProduct.category}</span>
-                    <span className="verified-scan-badge">✓ AI Vision Verified</span>
-                  </div>
-                  <h3 className="result-product-name">{currentProduct.name}</h3>
-                  <p className="result-brand">{currentProduct.brand}</p>
+            <div className="apple-card-inner">
+              {/* Product Identity Header */}
+              <div className="apple-result-top">
+                <div className="apple-result-text">
+                  <span className="apple-product-cat">{currentProduct.category}</span>
+                  <h3 className="apple-result-title">{currentProduct.name}</h3>
+                  <p className="apple-result-sub">{currentProduct.brand}</p>
                 </div>
 
-                {/* Health Score Radial Meter */}
-                <div className="health-score-container">
-                  <div className="score-circle-wrap">
-                    <svg className="score-svg" viewBox="0 0 120 120">
-                      <circle className="score-track" cx="60" cy="60" r="50" />
+                {/* Score Circular Meter */}
+                <div className="apple-score-widget">
+                  <div className="apple-circle-box">
+                    <svg viewBox="0 0 110 110" className="apple-score-svg">
+                      <circle className="apple-track" cx="55" cy="55" r="46" />
                       <circle
-                        className="score-fill"
-                        cx="60"
-                        cy="60"
-                        r="50"
+                        className="apple-progress"
+                        cx="55"
+                        cy="55"
+                        r="46"
                         strokeDasharray={circumference}
                         strokeDashoffset={offset}
-                        style={{ stroke: currentProduct.scoreColor }}
+                        style={{ stroke: scoreColor }}
                       />
                     </svg>
-                    <div className="score-value-box">
-                      <span className="score-num">{currentProduct.score}</span>
-                      <span className="score-max">/100</span>
+                    <div className="apple-score-center">
+                      <strong className="apple-num">{score}</strong>
+                      <span className="apple-scale">/100</span>
                     </div>
                   </div>
-                  <div
-                    className="score-rating"
-                    style={{ color: currentProduct.scoreColor }}
-                  >
+                  <span className="apple-grade-tag" style={{ color: scoreColor }}>
                     {currentProduct.grade}
-                  </div>
-                </div>
-              </div>
-
-              {/* Allergy Alert Banner */}
-              <div className="allergy-alert-box">
-                {hasHazard ? (
-                  <div className="alert-danger-banner">
-                    <div className="alert-danger-icon">!</div>
-                    <div className="alert-text-group">
-                      <strong className="alert-title-text">🚨 PERSONAL ALLERGY ALERT DETECTED</strong>
-                      <p className="alert-details-text">{flaggedAllergens.join(' • ')}</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="alert-safe-banner">
-                    <div className="alert-safe-icon">✓</div>
-                    <div className="alert-safe-text">
-                      <strong>100% Compatible with Your Profile</strong>
-                      <p>Zero allergen matches or restricted additives based on your saved diet preferences.</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-
-              {/* Nutrition Facts Fast-Grid */}
-              <div className="nutrition-fast-grid">
-                <div className="nutrition-cell">
-                  <span className="nutri-label">Calories</span>
-                  <strong className="nutri-val">{currentProduct.nutrition.cal}</strong>
-                  <span className={`nutri-indicator indicator-${currentProduct.nutrition.calType}`}>
-                    {currentProduct.nutrition.calTag}
-                  </span>
-                </div>
-                <div className="nutrition-cell">
-                  <span className="nutri-label">Sugars</span>
-                  <strong className="nutri-val">{currentProduct.nutrition.sugar}</strong>
-                  <span className={`nutri-indicator indicator-${currentProduct.nutrition.sugarType}`}>
-                    {currentProduct.nutrition.sugarTag}
-                  </span>
-                </div>
-                <div className="nutrition-cell">
-                  <span className="nutri-label">Total Fat</span>
-                  <strong className="nutri-val">{currentProduct.nutrition.fat}</strong>
-                  <span className={`nutri-indicator indicator-${currentProduct.nutrition.fatType}`}>
-                    {currentProduct.nutrition.fatTag}
-                  </span>
-                </div>
-                <div className="nutrition-cell">
-                  <span className="nutri-label">Sodium</span>
-                  <strong className="nutri-val">{currentProduct.nutrition.sodium}</strong>
-                  <span className={`nutri-indicator indicator-${currentProduct.nutrition.sodiumType}`}>
-                    {currentProduct.nutrition.sodiumTag}
-                  </span>
-                </div>
-                <div className="nutrition-cell">
-                  <span className="nutri-label">Protein</span>
-                  <strong className="nutri-val">{currentProduct.nutrition.protein}</strong>
-                  <span className={`nutri-indicator indicator-${currentProduct.nutrition.proteinType}`}>
-                    {currentProduct.nutrition.proteinTag}
                   </span>
                 </div>
               </div>
 
-              {/* Ingredient Breakdown & Jargon Buster */}
-              <div className="ingredients-analysis-box">
-                <div className="box-title-row">
-                  <h4>Extracted Ingredients Analysis</h4>
-                  <span className="click-hint">Click any ingredient for plain-English explanation</span>
-                </div>
-
-                <div className="ingredient-chips-container">
-                  {currentProduct.ingredients.map((ing) => {
-                    let isFlagged = false;
-                    if (ing.allergenKey && allergies[ing.allergenKey]) isFlagged = true;
-                    if (ing.id === 'palmoil' && allergies.palmoil) isFlagged = true;
-                    if (
-                      (ing.id === 'vanillin' ||
-                        ing.id === 'potassium-sorbate' ||
-                        ing.id === 'sodium-benzoate') &&
-                      allergies.additives
-                    ) {
-                      isFlagged = true;
-                    }
-
-                    return (
-                      <button
-                        key={ing.id}
-                        type="button"
-                        className={`ing-chip ${
-                          isFlagged
-                            ? 'ing-allergen-flagged'
-                            : ing.type === 'caution'
-                            ? 'ing-caution'
-                            : 'ing-clean'
-                        }`}
-                        onClick={() => onSelectIngredient(ing.id)}
-                      >
-                        <span>{isFlagged ? '⚠️' : ing.type === 'caution' ? '⚡' : '🌿'}</span>
-                        <span>{ing.name}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              {/* Additives & Preservative Verdict */}
-              <div className="additives-summary-card">
-                <div className="additive-status-icon">{currentProduct.additives.icon}</div>
-                <div className="additive-status-text">
-                  <strong>{currentProduct.additives.title}</strong>
-                  <p>{currentProduct.additives.desc}</p>
-                </div>
-              </div>
-
-              {/* Swap Recommendation Box */}
-              {currentProduct.swap && (
-                <div className="swap-recommendation-box">
-                  <div className="swap-header">
-                    <span className="swap-badge">💡 AI Recommended Healthier Swap</span>
-                    <span className="swap-delta text-emerald">{currentProduct.swap.delta}</span>
+              {/* NOVA & Verdict Box */}
+              {currentProduct.verdict && (
+                <div className="apple-verdict-box">
+                  <div className="apple-verdict-pill-row">
+                    <span className="apple-nova-badge">
+                      NOVA {currentProduct.nova_group || 1}
+                    </span>
+                    <span className="apple-verdict-label">AI Health Verdict</span>
                   </div>
-                  <div className="swap-body">
-                    <div className="swap-product-thumb">🌰</div>
-                    <div className="swap-details">
-                      <strong>{currentProduct.swap.title}</strong>
-                      <p>{currentProduct.swap.desc}</p>
-                    </div>
-                    <button
-                      className="btn btn-sm btn-secondary"
-                      onClick={() => alert('Viewing swap details: Available in 3 local stores near you!')}
-                    >
-                      View Product
-                    </button>
-                  </div>
+                  <p className="apple-verdict-quote">
+                    "{currentProduct.verdict}"
+                  </p>
                 </div>
               )}
 
-              {/* Food History Auto-Save Action */}
-              <div className="history-save-banner">
-                <div className="history-save-info">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" strokeWidth="2">
-                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
-                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
-                    <polyline points="7 3 7 8 15 8"></polyline>
-                  </svg>
-                  <span>
-                    Auto-saved to your <strong>Personal Food History</strong>
-                  </span>
+              {/* Clean 4-Metric Grid */}
+              <div className="apple-metrics-grid">
+                <div className="apple-metric-tile">
+                  <span className="metric-tag">Calories</span>
+                  <strong className="metric-figure">{currentProduct.nutrition?.cal}</strong>
                 </div>
-                <a href="#history-preview" className="history-save-link">
-                  View Nutrition Diary &rarr;
-                </a>
+                <div className="apple-metric-tile highlight">
+                  <span className="metric-tag">Protein</span>
+                  <strong className="metric-figure text-green">{currentProduct.nutrition?.protein}</strong>
+                </div>
+                <div className="apple-metric-tile">
+                  <span className="metric-tag">Sugar</span>
+                  <strong className="metric-figure">{currentProduct.nutrition?.sugar}</strong>
+                </div>
+                <div className="apple-metric-tile">
+                  <span className="metric-tag">Fat</span>
+                  <strong className="metric-figure">{currentProduct.nutrition?.fat}</strong>
+                </div>
               </div>
+
+              {/* Positives & Negatives Minimal Summary */}
+              {currentProduct.positives && currentProduct.positives.length > 0 && (
+                <div className="apple-highlights-list">
+                  {currentProduct.positives.slice(0, 2).map((item, idx) => (
+                    <div key={idx} className="apple-item-row positive">
+                      <span className="apple-check-icon">✓</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                  {currentProduct.negatives && currentProduct.negatives.slice(0, 1).map((item, idx) => (
+                    <div key={idx} className="apple-item-row negative">
+                      <span className="apple-alert-icon">!</span>
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
