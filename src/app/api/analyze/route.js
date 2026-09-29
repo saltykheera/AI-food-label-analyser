@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { matchCaseStudyFile } from '@/utils/caseStudyData';
 
 const BACKEND_URL = 'https://food-label-backend.vercel.app/api/analyze';
 
@@ -47,6 +48,13 @@ export async function POST(request) {
         { error: 'No file provided in form data' },
         { status: 400 }
       );
+    }
+
+    // Instant match for Case Study demo products (Maggi, Frooti, Lay's, Chocos, Sting, Juzt Jelly)
+    const caseStudyMatch = matchCaseStudyFile(file.name || '', file.size || 0);
+    if (caseStudyMatch) {
+      console.log(`[API /api/analyze] Serving pre-determined case study demo data for: ${caseStudyMatch.product_name}`);
+      return NextResponse.json(caseStudyMatch);
     }
 
     // Try forwarding to backend

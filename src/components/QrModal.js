@@ -24,7 +24,7 @@ export default function QrModal({ isOpen, onClose }) {
         </button>
         <h3>Scan on Your Smartphone</h3>
         <p className="text-muted" style={{ marginBottom: '20px' }}>
-          Point your camera to launch the NutriLens AI scanner instantly with zero download.
+          Point your camera to launch the Poshan Parakh AI scanner instantly with zero download.
         </p>
 
         {/* Crisp vector QR code */}

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   proshanprakhar — Apple Design System
+   Poshan Parakh — Apple Design System
    Inspired by Apple (SF Pro, Action Blue #0071e3, Museum Whitespace, Zero Clutter)
    ========================================================================== */
 
@@ -1581,5 +1581,87 @@ button {
 
 .work-btn-primary:hover {
   background: var(--apple-blue-hover);
+}
+
+/* Apple-style Quick Demo Shortcuts */
+.work-demo-shortcuts {
+  margin-top: 20px;
+  padding-top: 18px;
+  border-top: 1px solid var(--apple-hairline-subtle);
+  width: 100%;
+}
+
+.work-demo-shortcuts-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--apple-muted);
+  margin-bottom: 10px;
+}
+
+.work-demo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.work-demo-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: #f5f5f7;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--apple-ink);
+  cursor: pointer;
+  transition: all 0.16s ease;
+  user-select: none;
+}
+
+.work-demo-chip:hover {
+  background: #e8e8ed;
+  transform: translateY(-1px);
+}
+
+.work-demo-chip:active {
+  transform: scale(0.97);
+}
+
+/* Result Thumbnail Preview */
+.work-result-preview-thumb {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  flex-shrink: 0;
+  background: #fbfbfd;
+}
+
+.work-result-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.work-case-study-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #1a7a37;
+  background: #eefbf3;
+  border: 1px solid rgba(52, 199, 89, 0.25);
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-top: 4px;
 }
 

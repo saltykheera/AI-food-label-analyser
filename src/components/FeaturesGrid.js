@@ -6,7 +6,7 @@ export default function FeaturesGrid() {
           <div className="pill-badge">Feature Suite</div>
           <h2 className="section-title">Engineered to Decode Every Food Industry Secret</h2>
           <p className="section-subtitle">
-            Food manufacturers use chemical aliases and microscopic fonts to obscure low-quality fillers. NutriLens AI translates it all into plain, actionable language.
+            Food manufacturers use chemical aliases and microscopic fonts to obscure low-quality fillers. Poshan Parakh AI translates it all into plain, actionable language.
           </p>
         </div>
 
@@ -43,7 +43,7 @@ export default function FeaturesGrid() {
             <div className="feature-icon-circle">🔄</div>
             <h3 className="feature-heading">Smart Healthy Swaps</h3>
             <p className="feature-copy">
-              Scanning a junk item doesn't end in frustration. NutriLens AI immediately highlights 2 to 3 certified healthier, lower-sugar, allergen-free alternatives available at your local grocer.
+              Scanning a junk item doesn't end in frustration. Poshan Parakh AI immediately highlights 2 to 3 certified healthier, lower-sugar, allergen-free alternatives available at your local grocer.
             </p>
             <div className="feature-preview-pill">
               <span className="preview-term">Recommended Swap:</span>

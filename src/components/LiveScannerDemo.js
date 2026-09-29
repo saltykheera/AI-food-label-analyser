@@ -3,20 +3,26 @@
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { PRODUCTS } from '@/data/mockData';
+import { CASE_STUDY_DEMO_MAP } from '@/utils/caseStudyData';
+
+const INITIAL_PRODUCTS = {
+  ...PRODUCTS,
+  ...CASE_STUDY_DEMO_MAP,
+};
 
 export default function LiveScannerDemo() {
-  const [productsData, setProductsData] = useState(PRODUCTS);
-  const [currentId, setCurrentId] = useState('chobani');
+  const [productsData, setProductsData] = useState(INITIAL_PRODUCTS);
+  const [currentId, setCurrentId] = useState('maggi');
   const [isScanning, setIsScanning] = useState(false);
   const [scanStepText, setScanStepText] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
 
   const fileInputRef = useRef(null);
-  const currentProduct = productsData[currentId] || productsData.chobani;
+  const currentProduct = productsData[currentId] || productsData.maggi || productsData.chobani;
 
   const runScan = (targetId, customData = null) => {
     setIsScanning(true);
-    setScanStepText('Analyzing label optics with Gemini Vision...');
+    setScanStepText('Analyzing label optics with Vision AI...');
 
     setTimeout(() => {
       setIsScanning(false);
@@ -24,7 +30,7 @@ export default function LiveScannerDemo() {
         setProductsData((prev) => ({ ...prev, [targetId]: customData }));
       }
       setCurrentId(targetId);
-    }, 700);
+    }, 240);
   };
 
   const handleFileUpload = async (file) => {
@@ -63,6 +69,7 @@ export default function LiveScannerDemo() {
           protein: data.nutritional_highlights?.protein || '—',
         },
         allergenTags: data.allergen_warnings || [],
+        imagePreview: URL.createObjectURL(file),
       };
 
       runScan('custom', customProduct);
@@ -81,10 +88,10 @@ export default function LiveScannerDemo() {
       <div className="apple-container">
         {/* Section Header */}
         <div className="apple-section-header">
-          <span className="apple-section-kicker">Interactive Scanner</span>
+          <span className="apple-section-kicker">Interactive Case Study Scanner</span>
           <h2 className="apple-section-title">See it in action.</h2>
           <p className="apple-section-desc">
-            Choose a sample food label below or upload your own to test real-time AI extraction.
+            Select a verified benchmark product or upload your own food label photo for instant analysis.
           </p>
         </div>
 
@@ -92,29 +99,65 @@ export default function LiveScannerDemo() {
         <div className="apple-segmented-tabs">
           <button
             type="button"
+            className={`apple-tab-pill ${currentId === 'maggi' ? 'active' : ''}`}
+            onClick={() => runScan('maggi')}
+          >
+            <span>🍜 Maggi Masala</span>
+            <span className="apple-tab-score text-red">31</span>
+          </button>
+
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'frooti' ? 'active' : ''}`}
+            onClick={() => runScan('frooti')}
+          >
+            <span>🥭 Frooti</span>
+            <span className="apple-tab-score text-red">24</span>
+          </button>
+
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'lays' ? 'active' : ''}`}
+            onClick={() => runScan('lays')}
+          >
+            <span>🥔 Lay&apos;s</span>
+            <span className="apple-tab-score text-amber">45</span>
+          </button>
+
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'chocos' ? 'active' : ''}`}
+            onClick={() => runScan('chocos')}
+          >
+            <span>🍫 Chocos</span>
+            <span className="apple-tab-score text-amber">48</span>
+          </button>
+
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'sting' ? 'active' : ''}`}
+            onClick={() => runScan('sting')}
+          >
+            <span>⚡ Sting</span>
+            <span className="apple-tab-score text-red">18</span>
+          </button>
+
+          <button
+            type="button"
+            className={`apple-tab-pill ${currentId === 'justjelly' ? 'active' : ''}`}
+            onClick={() => runScan('justjelly')}
+          >
+            <span>🍬 Juzt Jelly</span>
+            <span className="apple-tab-score text-red">22</span>
+          </button>
+
+          <button
+            type="button"
             className={`apple-tab-pill ${currentId === 'chobani' ? 'active' : ''}`}
             onClick={() => runScan('chobani')}
           >
-            <span>🥛 Plain Greek Yogurt</span>
+            <span>🥛 Chobani</span>
             <span className="apple-tab-score text-green">96</span>
-          </button>
-
-          <button
-            type="button"
-            className={`apple-tab-pill ${currentId === 'bar' ? 'active' : ''}`}
-            onClick={() => runScan('bar')}
-          >
-            <span>🥣 SuperGreen Bowl</span>
-            <span className="apple-tab-score text-green">92</span>
-          </button>
-
-          <button
-            type="button"
-            className={`apple-tab-pill ${currentId === 'spread' ? 'active' : ''}`}
-            onClick={() => runScan('spread')}
-          >
-            <span>🍫 Hazelnut Spread</span>
-            <span className="apple-tab-score text-red">34</span>
           </button>
         </div>
 
@@ -182,6 +225,12 @@ export default function LiveScannerDemo() {
               {/* Product Identity Header */}
               <div className="apple-result-top">
                 <div className="apple-result-text">
+                  {currentProduct.imagePreview && (
+                    <div className="work-result-preview-thumb" style={{ marginBottom: 12 }}>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={currentProduct.imagePreview} alt={currentProduct.name} />
+                    </div>
+                  )}
                   <span className="apple-product-cat">{currentProduct.category}</span>
                   <h3 className="apple-result-title">{currentProduct.name}</h3>
                   <p className="apple-result-sub">{currentProduct.brand}</p>

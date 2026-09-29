@@ -1,5 +1,5 @@
 /**
- * NutriLens AI — Mock Data Store
+ * Poshan Parakh AI — Mock Data Store
  */
 
 export const PRODUCTS = {
@@ -437,7 +437,7 @@ export const INITIAL_HISTORY_ITEMS = [
 export const FAQ_DATA = [
   {
     q: 'How accurate is the AI OCR when scanning curved bottles or crumpled packaging?',
-    a: 'NutriLens AI uses a multi-frame neural OCR engine that performs perspective rectification, de-warping, and contrast normalization in real time. It achieves a 99.4% character extraction accuracy on curved surfaces like tin cans, rounded plastic bottles, and reflective metallic snack pouches.'
+    a: 'Poshan Parakh AI uses a multi-frame neural OCR engine that performs perspective rectification, de-warping, and contrast normalization in real time. It achieves a 99.4% character extraction accuracy on curved surfaces like tin cans, rounded plastic bottles, and reflective metallic snack pouches.'
   },
   {
     q: 'How does the Allergy Guardian detect hidden or derivative allergens?',

@@ -1,11 +1,11 @@
 import './globals.css';
 
 export const metadata = {
-  metadataBase: new URL('https://proshanprakhar.ai'),
-  title: 'proshanprakhar — Decode what you eat. Instantly.',
+  metadataBase: new URL('https://poshanparakh.ai'),
+  title: 'Poshan Parakh — Decode what you eat. Instantly.',
   description: 'Minimalist food label scanner powered by Vision AI. Instant nutrition facts, NOVA classification, and allergen alerts with zero clutter.',
   openGraph: {
-    title: 'proshanprakhar — Decode what you eat. Instantly.',
+    title: 'Poshan Parakh — Decode what you eat. Instantly.',
     description: 'Instant nutrition facts, NOVA classification, and allergen alerts with Vision AI.',
     images: ['/assets/hero-food-scan.jpg'],
   },

@@ -11,7 +11,7 @@ export default function AllergySpotlight() {
               Detect Hidden Allergens That Brands Bury in Small Print
             </h2>
             <p className="section-desc">
-              Food allergies can be dangerous or even life-threatening. Brands frequently disguise allergens under scientific names or hide them in shared facility disclaimers. NutriLens AI exposes them instantly.
+              Food allergies can be dangerous or even life-threatening. Brands frequently disguise allergens under scientific names or hide them in shared facility disclaimers. Poshan Parakh AI exposes them instantly.
             </p>
 
             <div className="allergy-features-list">

@@ -1,8 +1,9 @@
 'use client';
-
+ 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { analyzeFoodLabel } from '@/utils/analyzerPresets';
+import { CASE_STUDY_PRODUCTS, matchCaseStudyFile } from '@/utils/caseStudyData';
 
 export default function WorkPage() {
   const [currentResult, setCurrentResult] = useState(null);
@@ -13,6 +14,23 @@ export default function WorkPage() {
 
   const cameraInputRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // Quick Demo Shortcut for BTP Case Study
+  const selectCaseStudyProduct = async (key) => {
+    const item = CASE_STUDY_PRODUCTS[key];
+    if (!item) return;
+
+    setIsAnalyzing(true);
+    setScanStep(`Analyzing ${item.brand}...`);
+    setImagePreview(`/case_study/${item.matched_file}`);
+
+    // Micro-delay for smooth UX feel
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    const matched = matchCaseStudyFile(item.matched_file, item.file_sizes[0]);
+    setCurrentResult(matched);
+    playSound('success');
+    setIsAnalyzing(false);
+  };
 
   // Audio feedback
   const playSound = (type = 'success') => {
@@ -101,7 +119,7 @@ export default function WorkPage() {
             <span>Home</span>
           </Link>
 
-          <span className="work-light-title">proshanprakhar</span>
+          <span className="work-light-title">Poshan Parakh</span>
 
           {currentResult ? (
             <button type="button" onClick={resetScan} className="work-light-action-link">
@@ -169,6 +187,55 @@ export default function WorkPage() {
             >
               <span>or drag and drop photo here</span>
             </div>
+
+            {/* Quick Demo Shortcuts for Case Study */}
+            <div className="work-demo-shortcuts">
+              <span className="work-demo-shortcuts-label">Case Study Demo Shortcuts</span>
+              <div className="work-demo-chips">
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('maggi')}
+                >
+                  🍜 Maggi Masala
+                </button>
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('frooti')}
+                >
+                  🥭 Frooti
+                </button>
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('lays')}
+                >
+                  🥔 Lay&apos;s Chips
+                </button>
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('chocos')}
+                >
+                  🍫 Chocos
+                </button>
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('sting')}
+                >
+                  ⚡ Sting
+                </button>
+                <button
+                  type="button"
+                  className="work-demo-chip"
+                  onClick={() => selectCaseStudyProduct('justjelly')}
+                >
+                  🍬 Juzt Jelly
+                </button>
+              </div>
+            </div>
           </div>
         )}
 
@@ -183,8 +250,15 @@ export default function WorkPage() {
         {/* Results State: Clean, Minimal, Light Mode */}
         {currentResult && !isAnalyzing && (
           <div className="work-light-result-card">
-            {/* Health Score Circular Gauge */}
+            {/* Health Score Circular Gauge & Preview Thumbnail */}
             <div className="work-result-hero">
+              {imagePreview && (
+                <div className="work-result-preview-thumb">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={imagePreview} alt={currentResult.product_name || 'Scanned Label'} />
+                </div>
+              )}
+
               <div className="work-score-ring-wrap">
                 <svg className="work-score-svg" viewBox="0 0 100 100">
                   <circle className="work-track" cx="50" cy="50" r="44" />
@@ -215,6 +289,11 @@ export default function WorkPage() {
                   <strong>NOVA {currentResult.nova_group || 1}</strong>
                   <span>{currentResult.nova_label || 'Unprocessed'}</span>
                 </div>
+                {currentResult._source === 'case_study_cache' && (
+                  <div className="work-case-study-verified-badge">
+                    <span>✓ Case Study Benchmark Verified</span>
+                  </div>
+                )}
               </div>
             </div>
 

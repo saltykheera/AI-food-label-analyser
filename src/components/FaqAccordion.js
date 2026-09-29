@@ -17,7 +17,7 @@ export default function FaqAccordion() {
           <div className="pill-badge">Got Questions?</div>
           <h2 className="section-title">Frequently Asked Questions</h2>
           <p className="section-subtitle">
-            Everything you need to know about NutriLens AI accuracy, privacy, and technology.
+            Everything you need to know about Poshan Parakh AI accuracy, privacy, and technology.
           </p>
         </div>
 

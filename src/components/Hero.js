@@ -8,7 +8,7 @@ export default function Hero() {
       <div className="apple-hero-container">
         {/* Headline Group */}
         <div className="apple-hero-copy">
-          <span className="apple-hero-eyebrow">proshanprakhar Vision AI</span>
+          <span className="apple-hero-eyebrow">Poshan Parakh Vision AI</span>
           <h1 className="apple-hero-title">
             Decode what you eat.
             <br />

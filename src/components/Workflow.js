@@ -6,7 +6,7 @@ export default function Workflow() {
           <div className="pill-badge">Seamless Journey</div>
           <h2 className="section-title">From Microscopic Fine Print to Total Clarity in 6 Steps</h2>
           <p className="section-subtitle">
-            NutriLens AI replaces 15 minutes of squinting at ingredient lists with a single 0.4-second intelligent scan.
+            Poshan Parakh AI replaces 15 minutes of squinting at ingredient lists with a single 0.4-second intelligent scan.
           </p>
         </div>
 

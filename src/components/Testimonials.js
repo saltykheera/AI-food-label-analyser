@@ -6,7 +6,7 @@ export default function Testimonials() {
           <div className="pill-badge">User Stories</div>
           <h2 className="section-title">Trusted by Dietitians, Parents &amp; Foodies</h2>
           <p className="section-subtitle">
-            See how real people use NutriLens AI every week to avoid hospital visits and make healthier choices.
+            See how real people use Poshan Parakh AI every week to avoid hospital visits and make healthier choices.
           </p>
         </div>
 
@@ -14,7 +14,7 @@ export default function Testimonials() {
           <div className="testimonial-card glass-panel">
             <div className="testimonial-stars">★★★★★</div>
             <p className="testimonial-quote">
-              &ldquo;My 7-year-old has a severe peanut and tree nut allergy. Grocery shopping used to take me hours reading microscopic warnings. NutriLens AI flagged a hidden shared-facility notice on a biscuit brand I almost bought. It literally prevented an ER visit.&rdquo;
+              &ldquo;My 7-year-old has a severe peanut and tree nut allergy. Grocery shopping used to take me hours reading microscopic warnings. Poshan Parakh AI flagged a hidden shared-facility notice on a biscuit brand I almost bought. It literally prevented an ER visit.&rdquo;
             </p>
             <div className="testimonial-author">
               <div className="author-avatar avatar-1">ES</div>
@@ -28,7 +28,7 @@ export default function Testimonials() {
           <div className="testimonial-card glass-panel">
             <div className="testimonial-stars">★★★★★</div>
             <p className="testimonial-quote">
-              &ldquo;As a registered dietitian, I recommend NutriLens AI to all my pre-diabetic patients. The way it breaks down hidden alias names for high-fructose corn syrup and gives a realistic health score is far superior to standard nutrition tables.&rdquo;
+              &ldquo;As a registered dietitian, I recommend Poshan Parakh AI to all my pre-diabetic patients. The way it breaks down hidden alias names for high-fructose corn syrup and gives a realistic health score is far superior to standard nutrition tables.&rdquo;
             </p>
             <div className="testimonial-author">
               <div className="author-avatar avatar-2">Dr.M</div>

@@ -28,7 +28,7 @@ export default function Header() {
             <rect x="5" y="2" width="14" height="20" rx="3" />
             <circle cx="12" cy="12" r="3" />
           </svg>
-          <span className="apple-brand-text">proshanprakhar</span>
+          <span className="apple-brand-text">Poshan Parakh</span>
         </Link>
 
         {/* Minimal Navigation */}
